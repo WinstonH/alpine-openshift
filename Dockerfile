@@ -71,6 +71,15 @@ RUN unzip /www/DirectoryLister.zip \
 && chown -R www:www /www \
 && rm kodexplorer4.25.zip
 # End websites adding
+#prepare sshd config
+RUN sudo mkdir -p /var/run/sshd \
+&& sudo sed -i "s/UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config \
+&& sudo sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config \
+&& sudo sed -i "s/PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config \
+&& sudo sed -i "s/#AuthorizedKeysFile/AuthorizedKeysFile/g" /etc/ssh/sshd_config \
+&& sudo sed -i "s/#X11Forwarding no/X11Forwarding yes/g" /etc/ssh/sshd_config \
+&& sudo sed -i "s/#PermitUserEnvironment no/PermitUserEnvironment yes/g" /etc/ssh/sshd_config \
+&& echo "ForwardX11Trusted yes" >> /etc/ssh/ssh_config
 COPY entrypoint.sh /usr/sbin/
 WORKDIR /home/alpine
 USER alpine
